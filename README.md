@@ -80,6 +80,22 @@ This model produces a file annotation conforming to the [Open Validation Schemas
 * `duration`: The total duration of the source media in seconds.
 * `attributes`: Includes `language_probability`.
 
+## Hardware Acceleration
+
+**Note for Windows Users (GPU):**
+
+If you see an error regarding `cublas64_12.dll`, you can install the required NVIDIA runtime libraries directly into your Python environment:
+
+```bash
+pip install nvidia-cublas-cu12 nvidia-cudnn-cu12
+```
+
+Alternatively, if you do not have an NVIDIA GPU, force CPU mode:
+
+```bash
+dorsal run dorsalhub/whisper path/to/file.mkv --opt device=cpu
+```
+
 
 ## Development
 

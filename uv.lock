@@ -411,7 +411,7 @@ wheels = [
 
 [[package]]
 name = "dorsal-whisper"
-version = "0.2.0"
+version = "0.3.0"
 source = { editable = "." }
 dependencies = [
     { name = "dorsalhub" },
@@ -429,7 +429,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "dorsalhub", specifier = ">=0.8.1" },
+    { name = "dorsalhub", specifier = ">=0.8.2" },
     { name = "faster-whisper", specifier = ">=0.10.0" },
     { name = "protobuf", specifier = ">=6.33.5" },
 ]
@@ -444,10 +444,11 @@ dev = [
 
 [[package]]
 name = "dorsalhub"
-version = "0.8.1"
+version = "0.8.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "blake3" },
+    { name = "dorsalhub-adapters" },
     { name = "jinja2" },
     { name = "jsonschema-rs" },
     { name = "langcodes" },
@@ -465,9 +466,22 @@ dependencies = [
     { name = "tqdm" },
     { name = "typer" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/10/23/93f261d53e1f5427439eb071bcd5570698c4b2ac8f5115f7b3d494d394b6/dorsalhub-0.8.1.tar.gz", hash = "sha256:86b63c875ef46d2aa53ee20a0d0d8e4cb213aee718ad2a1002aa7aeb571bac8a", size = 3655009 }
+sdist = { url = "https://files.pythonhosted.org/packages/48/16/e369780fd93f22be82cbb22a79160c7484101a68d77419edc5dd723f7be6/dorsalhub-0.8.6.tar.gz", hash = "sha256:4eaa9f2d85156b9c86576f167e0cea8c4baeb5af28d0114845545757033af1d0", size = 3658151 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8d/7a/1a62b34e0194c3c05c855d023e94d0cf5a9ce17b705eada5831754f24675/dorsalhub-0.8.1-py3-none-any.whl", hash = "sha256:a48fa905074d21ea0acfaf29821f7b4f75b36759ab172d83812886200f9e0269", size = 1362654 },
+    { url = "https://files.pythonhosted.org/packages/61/e3/1137730491468c9b37605b3ec16cfb2e7b13e45a614337823b7a35bd7ae6/dorsalhub-0.8.6-py3-none-any.whl", hash = "sha256:f59276940809a6a02e98a71a97727ab577760b1b2aad3d3211052a48e3f22498", size = 1364439 },
+]
+
+[[package]]
+name = "dorsalhub-adapters"
+version = "0.4.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "srt" },
+    { name = "webvtt-py" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/31/20/ef48a1e21ddbaf59b02a8c06a4562a628c699bf487f253749dfbade323e9/dorsalhub_adapters-0.4.0.tar.gz", hash = "sha256:d47620d16fbc1596379ba64fef5e2e1030682c06de79170b08d7bfddeb653941", size = 42576 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8f/be/979b1482971a1606bfc987067e6a5ec39423fafad0a52f78b2d896140af7/dorsalhub_adapters-0.4.0-py3-none-any.whl", hash = "sha256:9918d77d389badff8ebbfe13e36b95a52d6f17a3ad6dce11ddedd8bef6aa90df", size = 45235 },
 ]
 
 [[package]]
@@ -1525,6 +1539,12 @@ wheels = [
 ]
 
 [[package]]
+name = "srt"
+version = "3.5.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/66/b7/4a1bc231e0681ebf339337b0cd05b91dc6a0d701fa852bb812e244b7a030/srt-3.5.3.tar.gz", hash = "sha256:4884315043a4f0740fd1f878ed6caa376ac06d70e135f306a6dc44632eed0cc0", size = 28296 }
+
+[[package]]
 name = "sympy"
 version = "1.14.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1718,4 +1738,13 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/c7/24/5f1b3bdffd70275f6661c76461e25f024d5a38a46f04aaca912426a2b1d3/urllib3-2.6.3.tar.gz", hash = "sha256:1b62b6884944a57dbe321509ab94fd4d3b307075e0c2eae991ac71ee15ad38ed", size = 435556 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/39/08/aaaad47bc4e9dc8c725e68f9d04865dbcb2052843ff09c97b08904852d84/urllib3-2.6.3-py3-none-any.whl", hash = "sha256:bf272323e553dfb2e87d9bfd225ca7b0f467b919d7bbd355436d3fd37cb0acd4", size = 131584 },
+]
+
+[[package]]
+name = "webvtt-py"
+version = "0.5.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/5e/f6/7c9c964681fb148e0293e6860108d378e09ccab2218f9063fd3eb87f840a/webvtt-py-0.5.1.tar.gz", hash = "sha256:2040dd325277ddadc1e0c6cc66cbc4a1d9b6b49b24c57a0c3364374c3e8a3dc1", size = 55128 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f3/ed/aad7e0f5a462d679f7b4d2e0d8502c3096740c883b5bbed5103146480937/webvtt_py-0.5.1-py3-none-any.whl", hash = "sha256:9d517d286cfe7fc7825e9d4e2079647ce32f5678eb58e39ef544ffbb932610b7", size = 19802 },
 ]

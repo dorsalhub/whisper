@@ -63,13 +63,13 @@ def test_model_caching():
 
     model_1 = transcriber._load_model("tiny", compute_type="default")
     assert FasterWhisperTranscriber._active_model is not None
-    assert FasterWhisperTranscriber._active_model[0] == "tiny-default"
+    assert FasterWhisperTranscriber._active_model[0] == "tiny-auto-default-0"
 
     model_2 = transcriber._load_model("tiny", compute_type="default")
     assert model_1 is model_2, "Model was not loaded from cache!"
 
     model_3 = transcriber._load_model("base", compute_type="default")
-    assert FasterWhisperTranscriber._active_model[0] == "base-default"
+    assert FasterWhisperTranscriber._active_model[0] == "base-auto-default-0"
     assert model_3 is not model_1, "Cache did not evict the old model!"
 
 

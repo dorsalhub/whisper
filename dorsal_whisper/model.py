@@ -49,8 +49,14 @@ class FasterWhisperTranscriber(AnnotationModel):
     default_model_size = "base"
     _active_model: ClassVar[tuple[str, Any] | None] = None
 
-    def _load_model(self, model_size: str, compute_type: str = "default"):
-        cache_key = f"{model_size}-{compute_type}"
+    def _load_model(
+        self,
+        model_size: str,
+        device: str = "auto",
+        compute_type: str = "default",
+        cpu_threads: int = 0,
+    ):
+        cache_key = f"{model_size}-{device}-{compute_type}-{cpu_threads}"
 
         if self._active_model and self._active_model[0] == cache_key:
             logger.debug(f"Loading from cache: {cache_key}")
@@ -69,12 +75,20 @@ class FasterWhisperTranscriber(AnnotationModel):
 
         try:
             model = WhisperModel(
-                model_size_or_path=model_size, device="auto", compute_type=compute_type
+                model_size_or_path=model_size,
+                device=device,
+                compute_type=compute_type,
+                cpu_threads=cpu_threads,
             )
         except (ValueError, RuntimeError) as e:
-            logger.warning(f"Auto-loading failed, falling back to CPU int8: {e}")
+            logger.warning(
+                f"Failed to load model on {device}, falling back to CPU: {e}"
+            )
             model = WhisperModel(
-                model_size_or_path=model_size, device="cpu", compute_type="int8"
+                model_size_or_path=model_size,
+                device="cpu",
+                compute_type="int8",
+                cpu_threads=cpu_threads,
             )
 
         logger.info(f"Loaded faster-whisper model '{model_size}' successfully.")
@@ -85,11 +99,13 @@ class FasterWhisperTranscriber(AnnotationModel):
     def main(
         self,
         model_size: str | None = None,
+        device: str = "auto",
+        compute_type: str = "default",
+        cpu_threads: int = 0,
         beam_size: int = 5,
         vad_filter: bool = True,
         force: bool = False,
         batch_size: int | None = None,
-        compute_type: str = "default",
         **kwargs,
     ) -> dict | None:
         """
@@ -113,7 +129,12 @@ class FasterWhisperTranscriber(AnnotationModel):
         target_size = model_size or self.default_model_size
 
         try:
-            model = self._load_model(target_size, compute_type=compute_type)
+            model = self._load_model(
+                target_size,
+                device=device,
+                compute_type=compute_type,
+                cpu_threads=cpu_threads,
+            )
         except Exception as e:
             self.set_error(f"Failed to load model '{target_size}': {e}")
             return None

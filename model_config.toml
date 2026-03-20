@@ -9,3 +9,8 @@ include = ["audio", "video"]
 
 [options]
 model_size = "base"
+device = "auto"
+compute_type = "default"
+cpu_threads = 0
+beam_size = 5
+vad_filter = true
