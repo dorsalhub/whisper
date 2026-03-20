@@ -56,7 +56,14 @@ class FasterWhisperTranscriber(AnnotationModel):
         compute_type: str = "default",
         cpu_threads: int = 0,
     ):
-        cache_key = f"{model_size}-{device}-{compute_type}-{cpu_threads}"
+        effective_compute_type = compute_type
+        if device == "cpu" and effective_compute_type == "default":
+            effective_compute_type = "int8"
+            logger.info(
+                "Automatically selecting 'int8' compute_type for optimized CPU execution."
+            )
+
+        cache_key = f"{model_size}-{device}-{effective_compute_type}-{cpu_threads}"
 
         if self._active_model and self._active_model[0] == cache_key:
             logger.debug(f"Loading from cache: {cache_key}")
@@ -70,19 +77,19 @@ class FasterWhisperTranscriber(AnnotationModel):
             FasterWhisperTranscriber._active_model = None
 
         logger.info(
-            f"Loading faster-whisper model '{model_size}' with compute_type '{compute_type}'..."
+            f"Loading faster-whisper model '{model_size}' on '{device}' with compute_type '{effective_compute_type}'..."
         )
 
         try:
             model = WhisperModel(
                 model_size_or_path=model_size,
                 device=device,
-                compute_type=compute_type,
+                compute_type=effective_compute_type,
                 cpu_threads=cpu_threads,
             )
         except (ValueError, RuntimeError) as e:
             logger.warning(
-                f"Failed to load model on {device}, falling back to CPU: {e}"
+                f"Failed to load model on {device} with {effective_compute_type}, falling back to CPU (int8): {e}"
             )
             model = WhisperModel(
                 model_size_or_path=model_size,
@@ -113,14 +120,16 @@ class FasterWhisperTranscriber(AnnotationModel):
 
         Args:
             model_size: The model size to use (e.g., "base", "large-v3").
+            device: Device to use ("auto", "cuda", "cpu"). Defaults to "auto".
+            compute_type: Quantization type (e.g., "int8", "float16", "default").
+            cpu_threads: Number of threads for CPU execution. 0 uses default.
             beam_size: Beam size for decoding. Defaults to 5.
-            vad_filter: Whether to apply Voice Activity Detection to filter silence. Defaults to True.
+            vad_filter: Whether to apply Voice Activity Detection. Defaults to True.
             force: If True, allows output text to exceed the schema limit.
-            batch_size: If provided, wraps the model in BatchedInferencePipeline for faster inference.
-            compute_type: Force quantization type (e.g., "int8", "float16", "default").
-            **kwargs: Additional arguments passed directly to model.transcribe (e.g., task="translate", language="ja", word_timestamps=True).
+            batch_size: If provided, uses BatchedInferencePipeline for faster inference.
+            **kwargs: Additional arguments passed to model.transcribe.
         Returns:
-            A dictionary matching the open/audio-transcription schema, or None on failure.
+            A dictionary matching the open/audio-transcription schema.
         """
         if WhisperModel is None:
             self.set_error("Missing dependency: 'faster-whisper'. Install via pip.")
@@ -152,11 +161,15 @@ class FasterWhisperTranscriber(AnnotationModel):
                 f"Transcribing {self.name} with {target_size} (beam={beam_size}, vad={vad_filter}, kwargs={kwargs})..."
             )
 
+            transcribe_kwargs = kwargs.copy()
             if batch_size is not None:
-                kwargs["batch_size"] = batch_size
+                transcribe_kwargs["batch_size"] = batch_size
 
             segments_generator, info = inference_model.transcribe(
-                self.file_path, beam_size=beam_size, vad_filter=vad_filter, **kwargs
+                self.file_path,
+                beam_size=beam_size,
+                vad_filter=vad_filter,
+                **transcribe_kwargs,
             )
 
             segments = []

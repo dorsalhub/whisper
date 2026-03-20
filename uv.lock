@@ -411,7 +411,7 @@ wheels = [
 
 [[package]]
 name = "dorsal-whisper"
-version = "0.3.0"
+version = "0.4.0"
 source = { editable = "." }
 dependencies = [
     { name = "dorsalhub" },
@@ -429,7 +429,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "dorsalhub", specifier = ">=0.8.2" },
+    { name = "dorsalhub", specifier = ">=0.8.6" },
     { name = "faster-whisper", specifier = ">=0.10.0" },
     { name = "protobuf", specifier = ">=6.33.5" },
 ]
