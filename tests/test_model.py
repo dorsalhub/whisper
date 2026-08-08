@@ -14,7 +14,9 @@
 
 import pathlib
 import tomllib
+
 from dorsal.testing import run_model
+
 from dorsal_whisper.model import FasterWhisperTranscriber
 
 TEST_ASSETS = pathlib.Path(__file__).parent / "assets"
