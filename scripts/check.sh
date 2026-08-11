@@ -5,13 +5,13 @@ set -e
 PYTHON_VERSIONS="3.11 3.12 3.13"
 
 echo "--- formatting with ruff ---"
-uv run --python=3.14 --group dev -- ruff format .
+uv run --python=3.13 --group dev -- ruff format .
 
 echo "--- linting with ruff ---"
-uv run --python=3.14 --group dev -- ruff check .
+uv run --python=3.13 --group dev -- ruff check .
 
 echo "--- type checking with mypy ---"
-uv run --python=3.14 --group dev -- mypy dorsal_whisper
+uv run --python=3.13 --group dev -- mypy dorsal_whisper
 
 for version in $PYTHON_VERSIONS; do
   echo ""

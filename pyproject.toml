@@ -4,14 +4,14 @@ build-backend = "hatchling.build"
 
 [project]
 name = "dorsal-whisper"
-version = "0.4.0"
+version = "0.5.0"
 description = "Dorsal model: dorsal-whisper"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "dorsalhub>=0.8.6",
-    "faster-whisper>=0.10.0",
-    "protobuf>=6.33.5",
+    "dorsalhub>=0.9.5",
+    "faster-whisper>=1.2.1",
+    "protobuf>=7.35.1",
 ]
 
 [dependency-groups]
@@ -30,3 +30,6 @@ packages = ["dorsal_whisper"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "model_config.toml" = "dorsal_whisper/model_config.toml"
+
+[tool.uv.sources]
+dorsalhub = { path = "../dorsal/dist/dorsalhub-0.9.5-py3-none-any.whl" }

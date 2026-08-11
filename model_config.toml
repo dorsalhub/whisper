@@ -1,16 +1,22 @@
 model_class = "FasterWhisperTranscriber"
 
 schema_id = "open/audio-transcription"
-schema_version = "0.4.0"
+schema_version = "0.5.0"
 
 [[dependencies]]
 type = "media_type"
 include = ["audio", "video"]
 
 [options]
-model_size = "base"
-device = "auto"
-compute_type = "default"
-cpu_threads = 0
-beam_size = 5
-vad_filter = true
+model_size      = { default = "base", help = "The model size to use (e.g., 'base', 'large-v3', 'turbo')." }
+device          = { default = "auto", help = "Device to use ('auto', 'cuda', 'cpu')." }
+compute_type    = { default = "default", help = "Quantization type (e.g., 'default', 'int8', 'float16')." }
+cpu_threads     = { default = 0, help = "Number of threads for CPU execution. 0 uses default." }
+beam_size       = { default = 5, help = "Beam size for decoding." }
+vad_filter      = { default = true, help = "Apply Silero VAD to filter out silence." }
+force           = { type = "bool", default = false, help = "If true, bypasses the schema character limit." }
+language        = { type = "str", help = "Input language (e.g., 'en', 'fr'). If not provided, it is auto-detected." }
+task            = { type = "str", help = "Task to perform: 'transcribe' (default) or 'translate' (to English)." }
+batch_size      = { type = "int", help = "If provided, uses BatchedInferencePipeline for faster inference (e.g., 8 or 16)." }
+word_timestamps = { type = "bool", help = "If true, extracts word-level timestamps." }
+vad_parameters  = { type = "dict", help = "JSON dictionary of VAD parameters (e.g., '{\"min_silence_duration_ms\": 500}')." }

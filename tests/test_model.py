@@ -14,7 +14,9 @@
 
 import pathlib
 import tomllib
+
 from dorsal.testing import run_model
+
 from dorsal_whisper.model import FasterWhisperTranscriber
 
 TEST_ASSETS = pathlib.Path(__file__).parent / "assets"
@@ -24,18 +26,43 @@ with open(root / "model_config.toml", "rb") as f:
     config = tomllib.load(f)
 
 
+def get_parsed_options(config_dict: dict) -> dict:
+    """Extracts default values from the TOML options schema, ignoring help-only keys."""
+    raw_options = config_dict.get("options", {})
+    parsed_options = {}
+
+    for key, value in raw_options.items():
+        if isinstance(value, dict):
+            if "default" in value:
+                parsed_options[key] = value["default"]
+        else:
+            parsed_options[key] = value
+
+    return parsed_options
+
+
+BASE_TEST_OPTIONS = get_parsed_options(config)
+
+
 def test_model_integration():
     """Tests the Whisper model running inside the Dorsal harness."""
     audio_file = TEST_ASSETS / "OSR_uk_000_0020_8k.wav"
 
-    result = run_model(
+    test_options = BASE_TEST_OPTIONS.copy()
+
+    results = run_model(
         annotation_model=FasterWhisperTranscriber,
         file_path=str(audio_file),
         schema_id=config["schema_id"],
         validation_model=config.get("validation_model"),
         dependencies=config.get("dependencies"),
-        options=config.get("options"),
+        options=test_options,
     )
+
+    assert isinstance(results, list) and len(results) > 0, (
+        "Expected a non-empty list of results"
+    )
+    result = results[0]
 
     assert result.error is None, f"Model execution failed: {result.error}"
     assert result.record is not None, "Model returned no data"
@@ -77,11 +104,11 @@ def test_word_timestamps():
     """Tests transcription with word-level timestamps enabled to ensure the sharpening logic works."""
     audio_file = TEST_ASSETS / "OSR_uk_000_0020_8k.wav"
 
-    test_options = config.get("options", {}).copy()
+    test_options = BASE_TEST_OPTIONS.copy()
     test_options["word_timestamps"] = True
     test_options["model_size"] = "tiny"
 
-    result = run_model(
+    results = run_model(
         annotation_model=FasterWhisperTranscriber,
         file_path=str(audio_file),
         schema_id=config["schema_id"],
@@ -89,6 +116,11 @@ def test_word_timestamps():
         dependencies=config.get("dependencies"),
         options=test_options,
     )
+
+    assert isinstance(results, list) and len(results) > 0, (
+        "Expected a non-empty list of results"
+    )
+    result = results[0]
 
     assert result.error is None, f"Word timestamps run failed: {result.error}"
 
@@ -105,11 +137,11 @@ def test_batched_inference():
     """Tests that the BatchedInferencePipeline wrapper works without throwing kwarg errors."""
     audio_file = TEST_ASSETS / "OSR_uk_000_0020_8k.wav"
 
-    test_options = config.get("options", {}).copy()
+    test_options = BASE_TEST_OPTIONS.copy()
     test_options["batch_size"] = 4
     test_options["model_size"] = "tiny"
 
-    result = run_model(
+    results = run_model(
         annotation_model=FasterWhisperTranscriber,
         file_path=str(audio_file),
         schema_id=config["schema_id"],
@@ -117,6 +149,11 @@ def test_batched_inference():
         dependencies=config.get("dependencies"),
         options=test_options,
     )
+
+    assert isinstance(results, list) and len(results) > 0, (
+        "Expected a non-empty list of results"
+    )
+    result = results[0]
 
     assert result.error is None, f"Batched inference failed: {result.error}"
     assert "text" in result.record
