@@ -14,9 +14,9 @@ compute_type    = { default = "default", help = "Quantization type (e.g., 'defau
 cpu_threads     = { default = 0, help = "Number of threads for CPU execution. 0 uses default." }
 beam_size       = { default = 5, help = "Beam size for decoding." }
 vad_filter      = { default = true, help = "Apply Silero VAD to filter out silence." }
-force           = { default = false, help = "If true, bypasses the schema character limit." }
-language        = { help = "Input language (e.g., 'en', 'fr'). If not provided, it is auto-detected." }
-task            = { help = "Task to perform: 'transcribe' (default) or 'translate' (to English)." }
-batch_size      = { help = "If provided, uses BatchedInferencePipeline for faster inference (e.g., 8 or 16)." }
-word_timestamps = { help = "If true, extracts word-level timestamps." }
-vad_parameters  = { help = "JSON dictionary of VAD parameters (e.g., '{\"min_silence_duration_ms\": 500}')." }
+force           = { type = "bool", default = false, help = "If true, bypasses the schema character limit." }
+language        = { type = "str", help = "Input language (e.g., 'en', 'fr'). If not provided, it is auto-detected." }
+task            = { type = "str", help = "Task to perform: 'transcribe' (default) or 'translate' (to English)." }
+batch_size      = { type = "int", help = "If provided, uses BatchedInferencePipeline for faster inference (e.g., 8 or 16)." }
+word_timestamps = { type = "bool", help = "If true, extracts word-level timestamps." }
+vad_parameters  = { type = "dict", help = "JSON dictionary of VAD parameters (e.g., '{\"min_silence_duration_ms\": 500}')." }
