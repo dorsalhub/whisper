@@ -10,3 +10,6 @@ venv
 
 dorsal.toml
 .coverage
+
+.claude
+CLAUDE.md
