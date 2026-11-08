@@ -10,6 +10,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "dorsalhub>=0.8.6",
+    "av<19",
     "faster-whisper>=0.10.0",
     "protobuf>=6.33.5",
 ]

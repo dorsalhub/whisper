@@ -24,7 +24,7 @@ jobs:
       - name: Install uv
         run: curl -LsSf https://astral.sh/uv/install.sh | sh
       - name: Add uv to PATH
-        run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
       - name: Install dependencies
         run: uv sync --group dev
       - name: Run Static Analysis
@@ -54,14 +54,13 @@ jobs:
 
       - name: Install uv
         run: curl -LsSf https://astral.sh/uv/install.sh | sh
-      
+
       - name: Add uv to PATH
         if: runner.os != 'Windows'
-        run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Add uv to PATH (Windows)
         if: runner.os == 'Windows'
-        # FIXED: Changed .cargo\bin to .local\bin based on installation logs
         run: echo "$env:USERPROFILE\.local\bin" >> $env:GITHUB_PATH
 
       - name: Restore uv cache
@@ -100,15 +99,48 @@ jobs:
       - name: Run tests
         run: uv run pytest --cov=dorsal_whisper --cov-report=xml
 
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: dorsalhub/whisper
+          files: coverage.xml
+          flags: ${{ matrix.os }}-py${{ matrix.python-version }}
+          fail_ci_if_error: true
+
   ci-success:
     needs: [lint, build-and-test]
     runs-on: ubuntu-latest
     if: always()
+    timeout-minutes: 5
+    permissions:
+      actions: read
     steps:
-      - name: Check workflow status
+      - name: Require every job in this run to have succeeded
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          if [[ "${{ contains(needs.*.result, 'failure') }}" == "true" || "${{ contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
-            echo "One or more jobs failed or were cancelled."
+          listing=""
+          for try in 1 2 3 4 5 6; do
+            if listing=$(gh api --paginate "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/attempts/$GITHUB_RUN_ATTEMPT/jobs?per_page=100" \
+              --jq '.jobs[] | select(.name != "ci-success") | [.conclusion // .status, .name] | @tsv'); then
+              if [[ -n "$listing" ]] && ! grep -qE '^(queued|in_progress|waiting|requested|pending)'$'\t' <<<"$listing"; then
+                break
+              fi
+            else
+              listing=""
+            fi
+            sleep 10
+          done
+          if [[ -z "$listing" ]]; then
+            echo "::error::Could not list the jobs of this run."
             exit 1
           fi
-          echo "All jobs passed."
+          echo "$listing"
+          not_success=$(awk -F'\t' '$1 != "success"' <<<"$listing")
+          if [[ -n "$not_success" ]]; then
+            echo "::error::Every job must conclude success; see the list above."
+            exit 1
+          fi
+          echo "All jobs succeeded."
