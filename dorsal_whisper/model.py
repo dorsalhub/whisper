@@ -13,16 +13,16 @@
 # limitations under the License.
 
 import logging
-from importlib.metadata import version
 import math
-from typing import ClassVar, Any
+from importlib.metadata import version
+from typing import Any, ClassVar
 
 from dorsal import AnnotationModel
 from dorsal.common.language import normalize_language_alpha3
 
 try:
     import faster_whisper  # type: ignore[import-untyped]
-    from faster_whisper import WhisperModel, BatchedInferencePipeline  # type: ignore[import-untyped]
+    from faster_whisper import BatchedInferencePipeline, WhisperModel  # type: ignore[import-untyped]
 
     FASTER_WHISPER_VERSION = getattr(faster_whisper, "__version__", "unknown")
 
@@ -144,7 +144,7 @@ class FasterWhisperTranscriber(AnnotationModel):
                 compute_type=compute_type,
                 cpu_threads=cpu_threads,
             )
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.set_error(f"Failed to load model '{target_size}': {e}")
             return None
 
@@ -179,7 +179,7 @@ class FasterWhisperTranscriber(AnnotationModel):
                 segments.append(seg)
                 self.update_progress(current=seg.end, total=total_duration)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.set_error(f"Transcription failed: {e}")
             return None
 

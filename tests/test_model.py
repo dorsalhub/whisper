@@ -14,7 +14,9 @@
 
 import pathlib
 import tomllib
+
 from dorsal.testing import run_model
+
 from dorsal_whisper.model import FasterWhisperTranscriber
 
 TEST_ASSETS = pathlib.Path(__file__).parent / "assets"
@@ -28,7 +30,7 @@ def test_model_integration():
     """Tests the Whisper model running inside the Dorsal harness."""
     audio_file = TEST_ASSETS / "OSR_uk_000_0020_8k.wav"
 
-    result = run_model(
+    (result,) = run_model(
         annotation_model=FasterWhisperTranscriber,
         file_path=str(audio_file),
         schema_id=config["schema_id"],
@@ -38,9 +40,9 @@ def test_model_integration():
     )
 
     assert result.error is None, f"Model execution failed: {result.error}"
-    assert result.record is not None, "Model returned no data"
+    assert result.records, "Model returned no data"
 
-    output = result.record
+    (output,) = result.records
 
     assert "faster-whisper" in output["producer"]
     assert "text" in output
@@ -81,7 +83,7 @@ def test_word_timestamps():
     test_options["word_timestamps"] = True
     test_options["model_size"] = "tiny"
 
-    result = run_model(
+    (result,) = run_model(
         annotation_model=FasterWhisperTranscriber,
         file_path=str(audio_file),
         schema_id=config["schema_id"],
@@ -92,7 +94,7 @@ def test_word_timestamps():
 
     assert result.error is None, f"Word timestamps run failed: {result.error}"
 
-    output = result.record
+    (output,) = result.records
     assert len(output["segments"]) > 0
 
     first_segment = output["segments"][0]
@@ -109,7 +111,7 @@ def test_batched_inference():
     test_options["batch_size"] = 4
     test_options["model_size"] = "tiny"
 
-    result = run_model(
+    (result,) = run_model(
         annotation_model=FasterWhisperTranscriber,
         file_path=str(audio_file),
         schema_id=config["schema_id"],
@@ -119,5 +121,5 @@ def test_batched_inference():
     )
 
     assert result.error is None, f"Batched inference failed: {result.error}"
-    assert "text" in result.record
-    assert len(result.record["text"]) > 0
+    (output,) = result.records
+    assert len(output["text"]) > 0
