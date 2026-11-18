@@ -1,16 +1,22 @@
 model_class = "FasterWhisperTranscriber"
 
 schema_id = "open/audio-transcription"
-schema_version = "0.4.0"
+schema_version = "0.8.0"
 
 [[dependencies]]
 type = "media_type"
 include = ["audio", "video"]
 
 [options]
-model_size = "base"
-device = "auto"
-compute_type = "default"
-cpu_threads = 0
-beam_size = 5
-vad_filter = true
+model_size      = { type = "str", default = "base", help = "Model size, Hugging Face repo id or local model path (e.g., 'base', 'large-v3', 'turbo')." }
+device          = { type = "str", default = "auto", help = "Device to use ('auto', 'cuda', 'cpu'). Only 'auto' falls back to CPU if loading fails." }
+compute_type    = { type = "str", default = "default", help = "Quantization type (e.g., 'default', 'int8', 'float16')." }
+cpu_threads     = { type = "int", default = 0, help = "Number of threads for CPU execution. 0 uses default." }
+beam_size       = { type = "int", default = 5, help = "Beam size for decoding." }
+vad_filter      = { type = "bool", default = true, help = "Apply Silero VAD to filter out silence." }
+force           = { type = "bool", default = false, help = "If true, a segment's text is not cut to the schema's 4096-character limit, so a longer segment gives an error and no record." }
+language        = { type = "str", help = "Input language (e.g., 'en', 'fr'). If not provided, it is auto-detected." }
+task            = { type = "str", help = "Task to perform: 'transcribe' (default) or 'translate' (to English)." }
+batch_size      = { type = "int", help = "If provided, uses BatchedInferencePipeline for faster inference (e.g., 8 or 16)." }
+word_timestamps = { type = "bool", help = "If true, uses word-level timestamps to tighten segment start and end times." }
+vad_parameters  = { type = "dict", help = "JSON dictionary of VAD parameters (e.g., '{\"min_silence_duration_ms\": 500}')." }

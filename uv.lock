@@ -586,7 +586,7 @@ wheels = [
 
 [[package]]
 name = "dorsal-whisper"
-version = "0.4.0"
+version = "0.5.0"
 source = { editable = "." }
 dependencies = [
     { name = "av" },
@@ -598,6 +598,7 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "mypy" },
+    { name = "oatschema", extra = ["validate"] },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "ruff" },
@@ -606,14 +607,15 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "av", specifier = "<19" },
-    { name = "dorsalhub", specifier = ">=0.8.6" },
-    { name = "faster-whisper", specifier = ">=0.10.0" },
+    { name = "dorsalhub", specifier = ">=0.13.3,<0.14" },
+    { name = "faster-whisper", specifier = ">=1.1.0" },
     { name = "protobuf", specifier = ">=6.33.5" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "mypy" },
+    { name = "oatschema", extras = ["validate"], specifier = ">=0.8.0.2,<0.9" },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "ruff" },
@@ -621,14 +623,14 @@ dev = [
 
 [[package]]
 name = "dorsalhub"
-version = "0.12.0"
+version = "0.13.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "blake3" },
-    { name = "dorsalhub-adapters" },
     { name = "jsonschema-rs" },
     { name = "langcodes" },
     { name = "oatschema", extra = ["validate"] },
+    { name = "oatschema-adapters" },
     { name = "packaging" },
     { name = "pydantic" },
     { name = "pymediainfo" },
@@ -643,23 +645,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "typer" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/6b/71/d24eef64fa13f900e48432841e4ee9e0643a31896f5190527922becf4c61/dorsalhub-0.12.0.tar.gz", hash = "sha256:cb7c0532294252683a0932c91c97404a34b08f74a1a11b3ee395f08281192dbb", size = 3752895, upload-time = "2026-10-20T16:12:29.999Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6f/04/b6baa68a33d7b2bbcac81705e1f00ff6b386fe2ea4af167b34bc948a2cbf/dorsalhub-0.13.3.tar.gz", hash = "sha256:e557cc135e0545c3b4bd0e9a5adeb8850722b48c910b775411bf3df44f29e3f6", size = 3837643, upload-time = "2026-11-17T22:45:48.562Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/67/17/1d80db397ece392986e34d4fdeab06b9a65c687b9776065fe4d146356bde/dorsalhub-0.12.0-py3-none-any.whl", hash = "sha256:acb1ca37f14c22559bced0a82b78690a4582b381179c55fbaea7d7698b8dbb1f", size = 1390359, upload-time = "2026-10-20T16:12:27.259Z" },
-]
-
-[[package]]
-name = "dorsalhub-adapters"
-version = "0.4.3"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "jsonschema-rs" },
-    { name = "srt" },
-    { name = "webvtt-py" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/36/ec/f7b90f50f068850201dd2f96c1bfb0678d0fffeaf509c3dde804efe64eda/dorsalhub_adapters-0.4.3.tar.gz", hash = "sha256:07cb90acbda7fbafc8c2c4cd7336652f6504a890e68c37dacf009848ad516f4d", size = 46323, upload-time = "2026-10-21T20:31:26.362Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/53/6f/61a5db3add74fa162da85162b40f995beb4c2ade4b3f85dea201c4f62345/dorsalhub_adapters-0.4.3-py3-none-any.whl", hash = "sha256:e3134d1f8fb1f0959470ec564d307cbdb5ffc217061ddb6343db0e271ea3437e", size = 45999, upload-time = "2026-10-21T20:31:25.036Z" },
+    { url = "https://files.pythonhosted.org/packages/87/4c/594bea42a780e947f1331a0b0446bd6d3deb7d50d38b25b8344a82a179b3/dorsalhub-0.13.3-py3-none-any.whl", hash = "sha256:fc98499468bba78d5f0c5cb7674b1a436d697478392ea619d31c9bf6c24a951e", size = 1413054, upload-time = "2026-11-17T22:45:46.39Z" },
 ]
 
 [[package]]
@@ -1331,16 +1319,30 @@ wheels = [
 
 [[package]]
 name = "oatschema"
-version = "0.8.0.1"
+version = "0.8.0.2"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/e8/de/3a14b26d2660a6d29cee18c66b765abc4f320507de9caf85e0c965eca0b8/oatschema-0.8.0.1.tar.gz", hash = "sha256:6978dbca7ffb46048c8a8cca5490a367f646939e4eee8ed8bb8ff3e99252b46b", size = 83736, upload-time = "2026-10-19T17:32:26.948Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f4/44/483dabbe6b4403591cf7452fb49346cd747009096445691079d3b58d8d25/oatschema-0.8.0.2.tar.gz", hash = "sha256:2ca5624acfcb5b662f60c020ab412e659b0ddbea0db8687c4eea9e7f0dca78e4", size = 87322, upload-time = "2026-10-30T10:38:04.724Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/63/03/d1544fb6d112e181c0620006a0a974bbe248dc0f2b8b387785b6be3d9623/oatschema-0.8.0.1-py3-none-any.whl", hash = "sha256:f96345ea7455a4b2d3f0836ed23900b80f96897070caef5278d4ef3f42516924", size = 116048, upload-time = "2026-10-19T17:32:25.178Z" },
+    { url = "https://files.pythonhosted.org/packages/c4/86/d67f3f86af57528f2c412448645cd8515701abfc475eed1620b76d058c04/oatschema-0.8.0.2-py3-none-any.whl", hash = "sha256:01ccb4305a8b41fefcbcf8555b913e6609d940e78330cf3a4db658934498b234", size = 117115, upload-time = "2026-10-30T10:38:03.333Z" },
 ]
 
 [package.optional-dependencies]
 validate = [
     { name = "jsonschema-rs" },
+]
+
+[[package]]
+name = "oatschema-adapters"
+version = "0.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "oatschema", extra = ["validate"] },
+    { name = "srt" },
+    { name = "webvtt-py" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d8/e7/6fb1a1864731488c34fa243659c69ba98e8655691eea89191f0e01a4d9a9/oatschema_adapters-0.1.0.tar.gz", hash = "sha256:a8295ed49cfc347fa9d4810f07b1f5a590a9adc32f1f6cd416593e281d458484", size = 91599, upload-time = "2026-10-31T10:17:40.871Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b5/41/a3596e3ee3788349263c68931ec3b99159e3b41a1dd7234794ec2d261cb2/oatschema_adapters-0.1.0-py3-none-any.whl", hash = "sha256:b176cd693e1e0286d8979e362bff767f20e4ca46ba4ddfd54a08dd3bcd21ba40", size = 46590, upload-time = "2026-10-31T10:17:39.155Z" },
 ]
 
 [[package]]
